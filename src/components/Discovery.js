@@ -12,6 +12,8 @@ import Actions from './Actions'
 import Dialog from './Dialog'
 import Excel from './Excel'
 
+import schema from '../config/schema' 
+
 function DialogExample() {
   const [example, setExample] = useState(null)
   return (
@@ -182,11 +184,17 @@ function Discovery() {
 
       <h2>Excel</h2>
       <Excel
-        headers={['Name', 'Year']}
-        initialData={[
-          ['Charles', '1859'],
-          ['Antoine', '1943'],
-        ]}
+        schema={schema}
+        initialData={schema.name.samples.map((_, idx) => {
+          const element = {}
+          for (let key in schema) {
+            element[key] = schema[key].samples[idx]
+          }
+          return element
+        })}
+        onDataChange={(data) => {
+          console.log(data)
+        }}
       />
     </div>
   )

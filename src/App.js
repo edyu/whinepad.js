@@ -1,6 +1,5 @@
 import { isDocument } from '@testing-library/user-event/dist/utils';
 import './App.css';
-import Excel from './components/Excel'
 import Discovery from './components/Discovery'
 
 let headers = localStorage.getItem('headers')
@@ -19,10 +18,6 @@ function App() {
   }
   return (
     <div>
-      <Excel
-        headers={headers}
-        initialData={data}
-      />
     </div>
   )
 }

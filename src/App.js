@@ -1,25 +1,22 @@
-import { isDocument } from '@testing-library/user-event/dist/utils';
 import './App.css';
 import Discovery from './components/Discovery'
-
-let headers = localStorage.getItem('headers')
-let data = localStorage.getItem('data')
-
-if (!headers) {
-  headers = ['Title', 'Year', 'Rating', 'Comments']
-  data = [['Red whine', '2021', '3', 'meh']]
-}
+import DataFlow from './components/DataFlow'
+import schema from './config/schema'
 
 const isDiscovery = window.location.pathname.replace(/\//g, '') === 'discovery' 
+
+let data = JSON.parse(localStorage.getItem('data'))
+
+if (!data) {
+  data = [{}]
+  Object.keys(schema).forEach((key) => (data[0][key] = schema[key].samples[0]))
+}
 
 function App() {
   if (isDiscovery) {
     return <Discovery />
   }
-  return (
-    <div>
-    </div>
-  )
+  return <DataFlow schema={schema} initialData={data} />
 }
 
 export default App;

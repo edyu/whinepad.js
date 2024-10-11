@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import clone from '../modules/clone'
 import schema from '../config/schema'
 import DataContext from '../contexts/DataContext'
+import RouteContext from '../contexts/RouteContext'
 
 import './Excel.css'
 import Actions from './Actions'
@@ -49,6 +50,7 @@ function dataMangler(data, action, payload) {
 
 function Excel({filter}) {
   const {data, updateData} = useContext(DataContext)
+  const {route, updateRoute} = useContext(RouteContext)
   const [sorting, setSorting] = useState({
     column: '',
     descending: false,
@@ -121,6 +123,7 @@ function Excel({filter}) {
       const isEdit = type === 'edit'
       if (type === 'info' || isEdit) {
         const formPrefill = data[rowidx]
+        updateRoute(type, rowidx)
         setDialog(
           <Dialog
             modal
@@ -130,6 +133,7 @@ function Excel({filter}) {
             hasCancel={isEdit}
             onAction={(action) => {
               setDialog(null)
+              updateRoute()
               if (isEdit && action === 'confirm') {
                 updateData(
                   dataMangler(data, 'saveForm', {
@@ -150,11 +154,16 @@ function Excel({filter}) {
         )
       }
     },
-    [data, updateData]
+    [data, updateData, updateRoute],
   )
 
   useEffect(() => {
-  })
+    if (route.edit !== null && route.edit < data.length) {
+      handleAction(route.edit, 'edit')
+    } else if (route.info !== null && route.info < data.length) {
+      handleAction(route.info, 'info') 
+    }
+  }, [route, handleAction, data])
 
   return (
     <div className="Excel">

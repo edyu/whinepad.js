@@ -9,15 +9,18 @@ import Form from './Form'
 import schema from '../config/schema'
 
 import DataContext from '../contexts/DataContext'
+import RouteContext from '../contexts/RouteContext'
 
 function Header({onSearch}) {
   const {data, updateData} = useContext(DataContext)
-  const [addNew, setAddNew] = useState(false)
+  const {route, updateRoute} = useContext(RouteContext)
+  const [addNew, setAddNew] = useState(route.add)
 
   const form = useRef(null)
 
   function saveNew(action) {
     setAddNew(false)
+    updateRoute()
     if (action === 'dismiss') {
       return
     }
@@ -32,6 +35,7 @@ function Header({onSearch}) {
 
   function onAdd() {
     setAddNew(true)
+    updateRoute('add')
   }
 
   const count = data.length
@@ -46,6 +50,7 @@ function Header({onSearch}) {
             placeholder={placeholder}
             id="search"
             onChange={onSearch}
+            defaultValue={route.filter}
           />
         </div>
         <div>

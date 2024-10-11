@@ -11,8 +11,29 @@ import Form from './Form'
 import Actions from './Actions'
 import Dialog from './Dialog'
 import Excel from './Excel'
+import DataContext from '../contexts/DataContext' 
 
 import schema from '../config/schema' 
+
+function ExcelExample() {
+  const initialData = schema.name.samples.map((_, idx) => {
+    const element = {}
+    for (let key in schema) {
+      element[key] = schema[key].samples[idx]
+    }
+
+    return element
+  })
+  const [data, setData] = useState(initialData)
+  function updateData(newData) {
+    setData(newData)
+  }
+  return (
+    <DataContext.Provider value={{data, updateData}}>
+      <Excel />
+    </DataContext.Provider>
+  )
+}
 
 function DialogExample() {
   const [example, setExample] = useState(null)
@@ -61,11 +82,9 @@ function Discovery() {
       </div>
 
       <h2>Header</h2>
-      <Header
-        onSearch={(e) => console.log(e)}
-        onAdd={() => alert('add')}
-        count={3}
-      />
+      <DataContext.Provider value={{data: [1, 2, 3], updateData: () => {}}}>
+        <Header onSearch={(e) => console.log(e)} />
+      </DataContext.Provider>
 
       <h2>Body</h2>
       <Body>I am content inside the body</Body>
@@ -183,19 +202,7 @@ function Discovery() {
       <DialogExample />
 
       <h2>Excel</h2>
-      <Excel
-        schema={schema}
-        initialData={schema.name.samples.map((_, idx) => {
-          const element = {}
-          for (let key in schema) {
-            element[key] = schema[key].samples[idx]
-          }
-          return element
-        })}
-        onDataChange={(data) => {
-          console.log(data)
-        }}
-      />
+      <ExcelExample />
     </div>
   )
 }
